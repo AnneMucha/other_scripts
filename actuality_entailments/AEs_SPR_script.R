@@ -12,65 +12,7 @@ library(scales)
 library(purrr)
 library(readr)
 
-# function to read results file from PCIbex:
-
-read.pcibex <- function(filepath, auto.colnames=TRUE, fun.col=function(col,cols){cols[cols==col]<-paste(col,"Ibex",sep=".");return(cols)}) {
-  n.cols <- max(count.fields(filepath,sep=",",quote=NULL),na.rm=TRUE)
-  if (auto.colnames){
-    cols <- c()
-    con <- file(filepath, "r")
-    while ( TRUE ) {
-      line <- readLines(con, n = 1, warn=FALSE)
-      if ( length(line) == 0) {
-        break
-      }
-      m <- regmatches(line,regexec("^# (\\d+)\\. (.+)\\.$",line))[[1]]
-      if (length(m) == 3) {
-        index <- as.numeric(m[2])
-        value <- m[3]
-        if (is.function(fun.col)){
-          cols <- fun.col(value,cols)
-        }
-        cols[index] <- value
-        if (index == n.cols){
-          break
-        }
-      }
-    }
-    close(con)
-    return(read.csv(filepath, comment.char="#", header=FALSE, col.names=cols))
-  }
-  else{
-    return(read.csv(filepath, comment.char="#", header=FALSE, col.names=seq(1:n.cols)))
-  }
-}
-
-# read results files
-
-listA_results_csv <- "results_listA_updated.csv"
-listA_results <- read.pcibex(listA_results_csv)
-
-listB_results_csv <- "results_listB_updated.csv"
-listB_results <- read.pcibex(listB_results_csv)
-
-listC_results_csv <- "results_listC_updated.csv"
-listC_results <- read.pcibex(listC_results_csv)
-
-listD_results_csv <- "results_listD_updated.csv"
-listD_results <- read.pcibex(listD_results_csv)
-
-list_mixed_csv <- "results_10.2.csv"
-listM_results <- read.pcibex(list_mixed_csv)
-
-# create CSV files from reformatted data -------------------------------------
-
-write.csv(listA_results,"/Users/amucha/OneDrive - University of Edinburgh/experiments_AEs/results_SPR/AEs_listA_results_formatted.csv", row.names = FALSE)
-write.csv(listB_results,"/Users/amucha/OneDrive - University of Edinburgh/experiments_AEs/results_SPR/AEs_listB_results_formatted.csv", row.names = FALSE)
-write.csv(listC_results,"/Users/amucha/OneDrive - University of Edinburgh/experiments_AEs/results_SPR/AEs_listC_results_formatted.csv", row.names = FALSE)
-write.csv(listD_results,"/Users/amucha/OneDrive - University of Edinburgh/experiments_AEs/results_SPR/AEs_listD_results_formatted.csv", row.names = FALSE)
-write.csv(listM_results,"/Users/amucha/OneDrive - University of Edinburgh/experiments_AEs/results_SPR/AEs_listM_results_formatted.csv", row.names = FALSE)
-
-# restart here 
+# read formatted data
 
 listA_results <- read.csv("AEs_listA_results_formatted.csv")
 listB_results <- read.csv("AEs_listB_results_formatted.csv")
@@ -167,9 +109,6 @@ View(listM_attention_SPR_points) # noone to exclude
 results_complete <- rbind(listA_results, listB_results, listC_results, listD_results, listM_results)
 View(results_complete)
 
-# write a new csv file with the complete data
-
-write.csv(results_complete,"/Users/amucha/OneDrive - University of Edinburgh/experiments_AEs/results_SPR/results_AEs_SPR_complete.csv", row.names = FALSE)
 
 # --------------------------- continue with complete data set ---------------------------------------------------------------------------------------------------------------------
 
@@ -263,8 +202,6 @@ results_SPR_cleaned <- results_SPR_targets_critical %>%
   filter(
     abs(Reading.time - mean_rt) <= 3 * sd_rt      
   )
-
-
 
 # apply the absolute thresholds 
 results_SPR_cleaned <- filter(results_SPR_cleaned, Reading.time >= 100 & Reading.time <= 3000)
@@ -781,4 +718,5 @@ ggplot(agg_residual_data_long_abil, aes(x = region, y = mean_ResRT, group = cond
   theme_minimal()
 
 q()
+
 
