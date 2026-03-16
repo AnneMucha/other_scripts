@@ -3,4 +3,4 @@ Repository for scripts from ongoing projects, currently includes:
 - R code for plotting and analysing data from an interactive communication experiment
 - Scripts for building and analysing self-paced reading studies on Actuality Entailments in German (JavaScript, R)
 - Scripts for building and analysing a pilot sentence selection study (JavaScript, R)
-- A Python script for a corpus study predicting word frequency from morphological complexity (Jupyter notebook)
+- A Python script for a corpus study predicting word frequency from morphological complexity (Jupyter Notebook)
